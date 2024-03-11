@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:go_green/game/go_green_game.dart';
@@ -7,6 +8,9 @@ import 'package:go_green/game/sprites/player.dart';
 
 class GoGreenWorld extends World with HasGameRef<GoGreenGame> {
   late final Player player;
+  final Random _random = Random();
+  int asteroidCount = 0;
+  late TimerComponent asteroidTimer;
 
   @override
   FutureOr<void> onLoad() {
@@ -15,22 +19,36 @@ class GoGreenWorld extends World with HasGameRef<GoGreenGame> {
     player = Player();
     add(player);
 
-    // Spawn multiple asteroids
-    spawnAsteroids(3); // Adjust the number as needed
+    // Start spawning asteroids every 2 seconds
+    asteroidTimer = TimerComponent(
+      period: 2,
+      repeat: true,
+      onTick: () => spawnAsteroid(),
+    );
+    add(asteroidTimer);
   }
 
-  void spawnAsteroids(int count) {
-    for (int i = 0; i < count; i++) {
-      final asteroid = Astroid();
+  void spawnAsteroid() {
+    final asteroid = Astroid();
 
-      // Set a random x position for the asteroid
-      asteroid.position.x =
-          gameRef.size.x * (i + 1) / (count + 1) - gameRef.size.x / 2;
+    // Create a new instance of Random and seed it with the current system time
+    final Random random = Random(DateTime.now().millisecondsSinceEpoch);
 
-      // Start above the screen
-      asteroid.position.y = -(gameRef.size.y / 2 + asteroid.size.y / 2);
+    // Set a random x position for the asteroid within the screen width
+    asteroid.position.x =
+        random.nextDouble() * gameRef.size.x - gameRef.size.x / 2;
 
-      add(asteroid);
+    // Start above the screen
+    asteroid.position.y = -(gameRef.size.y / 2 + asteroid.size.y / 2);
+
+    add(asteroid);
+
+    // Increment asteroid count
+    asteroidCount++;
+
+    // Check if it's the 4th asteroid, and if so, remove the asteroidTimer
+    if (asteroidCount >= 4) {
+      remove(asteroidTimer);
     }
   }
 }

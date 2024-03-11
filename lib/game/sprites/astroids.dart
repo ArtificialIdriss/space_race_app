@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:go_green/game/go_green_game.dart';
@@ -10,8 +11,14 @@ class Astroid extends SpriteComponent
   FutureOr<void> onLoad() async {
     sprite = await Sprite.load("astroid01.png");
     size = Vector2.all(300);
+
+    // Set random x position within the screen width
+    double minX = -(gameRef.size.x / 2) + size.x / 2; // Left boundary
+    double maxX = (gameRef.size.x / 2) - size.x / 2; // Right boundary
+    double randomX = Random().nextDouble() * (maxX - minX) + minX;
+
     position = Vector2(
-        0, -(gameRef.size.y / 2 + size.y / 2)); // Start above the screen
+        randomX, -(gameRef.size.y / 2 + size.y / 2)); // Start above the screen
     anchor = Anchor.center;
     add(RectangleHitbox());
   }
