@@ -1,6 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:go_green/constants.dart';
+import 'package:go_green/constants/constants.dart';
 import 'package:go_green/game/go_green_game.dart';
 
 class GameApp extends StatefulWidget {
@@ -25,7 +25,6 @@ class _GameAppState extends State<GameApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: Colors.yellow,
       ),
       home: Scaffold(
         body: SafeArea(
